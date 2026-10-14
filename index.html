@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus DIAN 2026 - Entrenamiento Familiar de Mérito</title>
+  <style>
+    :root {
+      --primary: #003366;
+      --secondary: #006699;
+      --accent: #ffcc00;
+      --success: #28a745;
+      --danger: #dc3545;
+      --light: #f4f6f9;
+      --dark: #212529;
+      --card-bg: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--light); color: var(--dark); line-height: 1.6; padding-bottom: 50px; }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+    header p { font-size: 0.95rem; opacity: 0.9; }
+
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: #e9ecef;
+      padding: 10px;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .tab-btn {
+      padding: 10px 16px;
+      border: none;
+      background: white;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--primary);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .container { max-width: 900px; margin: 25px auto; padding: 0 15px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-left: 5px solid var(--secondary);
+    }
+    .card h2 { color: var(--primary); margin-bottom: 12px; font-size: 1.3rem; }
+    .card h3 { color: var(--secondary); margin-top: 15px; margin-bottom: 8px; font-size: 1.1rem; }
+
+    .pedagogic-banner {
+      background: #e8f4fd;
+      border: 1px solid #b8daff;
+      border-left: 5px solid #007bff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.92rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .video-card {
+      background: #fafafa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .video-card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 14px;
+      background: #d9534f;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .video-card a:hover { background: #c9302c; }
+
+    /* Estilos del Examen Interactivo */
+    .quiz-container {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    .badge {
+      background: var(--primary);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .question-box { margin-bottom: 20px; }
+    .scenario {
+      background: #f8f9fa;
+      padding: 14px;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+    .question-text { font-weight: 600; font-size: 1.05rem; margin-bottom: 15px; }
+
+    .options-list { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn {
+      padding: 12px 15px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .option-btn:hover:not([disabled]) {
+      border-color: var(--secondary);
+      background: #f0f7ff;
+    }
+    .option-btn.correct {
+      background: #d4edda;
+      border-color: var(--success);
+      color: #155724;
+      font-weight: bold;
+    }
+    .option-btn.wrong {
+      background: #f8d7da;
+      border-color: var(--danger);
+      color: #721c24;
+      font-weight: bold;
+    }
+
+    .feedback-box {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .feedback-box.show { display: block; }
+    .feedback-box.correct-fb { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+    .feedback-box.wrong-fb { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+
+    .error-analysis {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    .btn-next {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      display: none;
+    }
+    .btn-next.show { display: inline-block; }
+
+    /* Resultados Finales */
+    .results-box {
+      text-align: center;
+      padding: 30px 20px;
+      display: none;
+    }
+    .results-box.show { display: block; animation: fadeIn 0.5s ease; }
+    .score-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 20px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      border: 5px solid var(--accent);
+    }
+    .score-circle span { font-size: 0.8rem; font-weight: normal; }
+
+    .reinforce-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      text-align: left;
+    }
+    .reinforce-table th, .reinforce-table td {
+      padding: 10px;
+      border: 1px solid #dee2e6;
+      font-size: 0.9rem;
+    }
+    .reinforce-table th { background: #f1f5f9; color: var(--primary); }
+    .btn-restart {
+      margin-top: 25px;
+      padding: 10px 22px;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Campus de Preparación DIAN 2026</h1>
+  <p>Entrenamiento Pedagógico Activo | Juanda, Ana, Nathan y Felipe</p>
+</header>
+
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="switchTab('tab-general')">🌐 Tronco Común</button>
+  <button class="tab-btn" onclick="switchTab('tab-juanda')">📂 Juanda (Facilitador I)</button>
+  <button class="tab-btn" onclick="switchTab('tab-ana')">📑 Ana (Facilitador III)</button>
+  <button class="tab-btn" onclick="switchTab('tab-nathan')">💻 Nathan (Analista I)</button>
+  <button class="tab-btn" onclick="switchTab('tab-felipe')">⚖️ Felipe (Gestor I)</button>
+  <button class="tab-btn" onclick="switchTab('tab-examen')">📝 Examen Secuencial</button>
+</div>
+
+<div class="container">
+
+  <!-- TAB TRONCO COMUN -->
+  <div id="tab-general" class="tab-content active">
+    <div class="pedagogic-banner">
+      💡 <strong>Guía Pedagógica:</strong> Antes de leer cualquier resumen normativo, observen los videos tutoriales de lectura crítica y analicen cómo identificar la tesis institucional y descartar distractores que violen el debido proceso.
+    </div>
+
+    <div class="card">
+      <h2>1. Componente Transversal Institucional y Normativo</h2>
+      <p>Comprende el 45% del puntaje total de las pruebas escritas y es idéntico para los 4 aspirantes:</p>
+      <ul>
+        <li><strong>Constitución de 1991:</strong> Artículos 1 al 29 (Derechos fundamentales y debido proceso) y artículo 209 (Principios de la función pública: igualdad, moralidad, eficacia, economía, celeridad e imparcialidad).</li>
+        <li><strong>Ley 87 de 1993 (Control Interno):</strong> Pilares de Autocontrol (individual), Autogestión (institucional) y Autorregulación (normativa voluntaria).</li>
+        <li><strong>Leyes de Transparencia y Disciplina:</strong> Ley 1474 de 2011 (Estatuto Anticorrupción), Ley 1712 de 2014 (Máxima publicidad y excepciones de reserva) y Ley 1952 de 2019 (Código General Disciplinario).</li>
+        <li><strong>Naturaleza de la DIAN:</strong> Decreto 4048 de 2008. Unidad Administrativa Especial adscrita al Ministerio de Hacienda, con autonomía y personería propia.</li>
+      </ul>
+
+      <h3>Videos Tutoriales de Lectura Crítica e Inferencial</h3>
+      <p>Utilicen estos accesos directos tomados del material de trabajo para afianzar la velocidad y comprensión:</p>
+      <div class="video-grid">
+        <div class="video-card">
+          <strong>Tutorial 1: Tesis e Inferencias</strong>
+          <p>Técnicas de lectura inferencial para descartar distractores.</p>
+          <a href="https://drive.google.com/file/d/1ChXrC_iJjGgbiPHnm2cWVU7waKOhfvem/view?usp=sharing" target="_blank">Ver Video 1</a>
+        </div>
+        <div class="video-card">
+          <strong>Tutorial 2: Estructura de Textos</strong>
+          <p>Identificación de premisas y conclusiones oficiales.</p>
+          <a href="https://drive.google.com/file/d/1NS-fZjPNxYpwkTF8T9YzaskafKr_mY1o/view?usp=sharing" target="_blank">Ver Video 2</a>
+        </div>
+        <div class="video-card">
+          <strong>Tutorial 3: Niveles Críticos</strong>
+          <p>Resolución de textos tributarios y socioeconómicos.</p>
+          <a href="https://drive.google.com/file/d/1yxDPQdLKHvM7bjDbEg1TLRIqwFg9ZeIA/view?usp=sharing" target="_blank">Ver Video 3</a>
+        </div>
+        <div class="video-card">
+          <strong>Tutorial 4: Gestión de Tiempo</strong>
+          <p>Estrategia de 2 minutos por pregunta en cuadernillos CNSC.</p>
+          <a href="https://drive.google.com/file/d/1394vwVCL0MC6DVJBDixST82KaagsocHY/view?usp=sharing" target="_blank">Ver Video 4</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB JUANDA (FACILITADOR I) -->
+  <div id="tab-juanda" class="tab-content">
+    <div class="card">
+      <h2>📂 Plan Específico: Juanda (Facilitador I - Nivel Asistencial)</h2>
+      <p><strong>Misión del cargo:</strong> Custodia del patrimonio documental, soporte logístico, correspondencia oficial y manejo de herramientas ofimáticas.</p>
+      
+      <h3>1. Fundamento Normativo Clave: Ley 594 de 2000 (Ley General de Archivos)</h3>
+      <ul>
+        <li><strong>Archivo de Gestión:</strong> Documentos en circulación frecuente y trámite activo. Conservan vigencia administrativa, legal y probatoria.</li>
+        <li><strong>Archivo Central:</strong> Documentos transferidos desde las dependencias cuya consulta es esporádica pero aún conservan vigencia legal.</li>
+        <li><strong>Archivo Histórico:</strong> Custodia permanente e inalterable por su valor para la memoria institucional y el patrimonio cultural.</li>
+        <li><strong>Foliación Técnica:</strong> Se realiza de forma cronológica estricta con lápiz de mina negra en el vértice superior derecho, sin tachones ni enmendaduras.</li>
+      </ul>
+
+      <h3>2. Herramientas Ofimáticas Obligatorias</h3>
+      <p>Práctica intensiva en Excel intermedio: funciones lógicas condicionales (<code>=SI()</code>), conteo por criterios (<code>=CONTAR.SI()</code>) y filtros avanzados de correspondencia devuelta.</p>
+    </div>
+  </div>
+
+  <!-- TAB ANA (FACILITADOR III) -->
+  <div id="tab-ana" class="tab-content">
+    <div class="card">
+      <h2>📑 Plan Específico: Ana (Facilitador III - Nivel Asistencial Avanzado)</h2>
+      <p><strong>Misión del cargo:</strong> Coordinación de instrumentos archivísticos, digitalización bajo modelo SGDEA y trámite preferente de PQRSDF.</p>
+
+      <h3>1. Instrumentos Archivísticos y Gestión Electrónica</h3>
+      <ul>
+        <li><strong>Tablas de Retención Documental (TRD):</strong> Listados de series y subseries que fijan los tiempos exactos de retención en el archivo de gestión y determinan su disposición final (eliminación, microfilmación/digitalización o selección).</li>
+        <li><strong>Tablas de Valoración Documental (TVD):</strong> Instrumento aplicado a fondos acumulados producidos antes de la implementación de las TRD.</li>
+        <li><strong>Modelo SGDEA (Cero Papel):</strong> Expedientes electrónicos con metadatos de contexto, trazabilidad de radicado y firma digital inmutable.</li>
+      </ul>
+
+      <h3>2. Atención al Ciudadano y PQRSDF (Ley 1755 de 2015)</h3>
+      <p>Términos legales perentorios: 15 días hábiles para peticiones de interés general/particular; 10 días hábiles para solicitud de documentos o copias (si no se responde opera el silencio administrativo positivo temporal); y 30 días para consultas especializadas.</p>
+    </div>
+  </div>
+
+  <!-- TAB NATHAN (ANALISTA I) -->
+  <div id="tab-nathan" class="tab-content">
+    <div class="card">
+      <h2>💻 Plan Específico: Nathan (Analista I - Nivel Técnico)</h2>
+      <p><strong>Misión del cargo:</strong> Soporte operativo en los sistemas informáticos de la DIAN, apoyo en auditorías contables y control aduanero en puertos y fronteras.</p>
+
+      <h3>1. Sistemas Misionales: MUISCA y Facturación Electrónica</h3>
+      <ul>
+        <li><strong>MUISCA:</strong> Modelo Único de Ingresos, Servicios y Control Automatizado. Plataforma central para el recaudo, control de obligaciones y expedientes virtuales.</li>
+        <li><strong>RUT (Registro Único Tributario - Art. 555-2 ET):</strong> Mecanismo oficial para identificar, ubicar y clasificar a los obligados administrados por la DIAN.</li>
+        <li><strong>Cruce de Factura Electrónica:</strong> Detección de omisos mediante la confrontación en tiempo real entre las ventas facturadas electrónicamente y las declaraciones periódicas de retención e IVA.</li>
+      </ul>
+
+      <h3>2. Régimen y Operativa Aduanera (Decreto 1165 de 2019)</h3>
+      <ul>
+        <li><strong>Etapas de Control:</strong> Previo (previo a la llegada o presentación de declaración), Simultáneo (durante la nacionalización y trámite de levante) y Posterior (auditorías posteriores al desaduanamiento).</li>
+        <li><strong>Contrabando Abierto vs. Técnico:</strong> Abierto es el ingreso clandestino por pasos no habilitados; Técnico es el ingreso por canales aduaneros formales valiéndose de documentación adulterada, subvaloración o clasificación arancelaria falsa.</li>
+        <li><strong>Medida Cautelar de Aprehensión:</strong> Retención física de las mercancías mediante Acta de Aprehensión cuando no acrediten amparo documental o existan discordancias de seriales o cantidades.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TAB FELIPE (GESTOR I) -->
+  <div id="tab-felipe" class="tab-content">
+    <div class="card">
+      <h2>⚖️ Plan Específico: Felipe (Gestor I - Nivel Profesional)</h2>
+      <p><strong>Misión del cargo:</strong> Determinación oficial de tributos, fiscalización tributaria y aduanera, sustanciación de la vía gubernativa y auditoría forense.</p>
+
+      <h3>1. Procedimiento Tributario y Vía Gubernativa (Estatuto Tributario)</h3>
+      <ul>
+        <li><strong>Requerimiento Especial (Art. 703 ET):</strong> Acto administrativo preparatorio indispensable donde la DIAN propone las glosas y cuantifica la sanción por inexactitud. El contribuyente tiene 3 meses para responder.</li>
+        <li><strong>Liquidación Oficial de Revisión (Art. 710 ET):</strong> Acto determinativo formal que modifica la declaración privada si los descargos no desvirtúan las glosas.</li>
+        <li><strong>Firmeza General (Art. 714 ET):</strong> Tres (3) años contados a partir del vencimiento del plazo para declarar, tras los cuales la DIAN pierde potestad para modificar la declaración privada.</li>
+        <li><strong>Recurso de Reconsideración (Art. 720 ET):</strong> Agotamiento de la vía gubernativa. Si la administración no lo resuelve en un (1) año opera el Silencio Administrativo Positivo (Art. 734 ET).</li>
+      </ul>
+
+      <h3>2. Auditoría Avanzada y Fiscalización Internacional</h3>
+      <ul>
+        <li><strong>Análisis Horizontal vs. Vertical:</strong> Horizontal evalúa la variación porcentual entre periodos; Vertical examina el peso proporcional interno de costos y deducciones para detectar manipulación de la base gravable.</li>
+        <li><strong>Cláusula General Antiabuso (Arts. 869 y ss. ET):</strong> Faculta a la DIAN para recaracterizar operaciones artificiosas sin propósito económico legítimo, haciendo primar la realidad económica sobre las formas contractuales.</li>
+        <li><strong>Precios de Transferencia:</strong> Aplicación del Principio de Plena Competencia (<em>Arm's Length</em>) en operaciones entre partes vinculadas del exterior para evitar el traslado artificial de utilidades.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TAB EXAMEN SECUENCIAL -->
+  <div id="tab-examen" class="tab-content">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <h2 id="quiz-title">Examen de Conocimiento y Juicio Situacional</h2>
+        <span class="badge" id="question-progress">Pregunta 1 de 6</span>
+      </div>
+
+      <div id="quiz-body">
+        <div class="question-box">
+          <div class="scenario" id="q-scenario">Cargando situación...</div>
+          <div class="question-text" id="q-text">Cargando pregunta...</div>
+          <div class="options-list" id="options-container"></div>
+        </div>
+
+        <div class="feedback-box" id="feedback-container">
+          <div id="feedback-result"></div>
+          <div class="error-analysis" id="feedback-detail"></div>
+        </div>
+
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Siguiente Pregunta ➔</button>
+      </div>
+
+      <div class="results-box" id="results-container">
+        <h2>¡Evaluación Completada!</h2>
+        <p style="margin-bottom: 20px;">Este es tu balance técnico frente a los estándares de la Comisión Nacional del Servicio Civil (CNSC):</p>
+        
+        <div class="score-circle" id="final-score">
+          0<span>/100 pts</span>
+        </div>
+        <p id="score-status" style="font-weight: bold; font-size: 1.1rem; margin-bottom: 15px;"></p>
+
+        <h3>Diagnóstico Personalizado de Nivelación y Refuerzo:</h3>
+        <table class="reinforce-table">
+          <thead>
+            <tr>
+              <th>Área Evaluada</th>
+              <th>Resultado</th>
+              <th>Tema Específico a Reforzar</th>
+            </tr>
+          </thead>
+          <tbody id="reinforce-table-body"></tbody>
+        </table>
+
+        <button class="btn-restart" onclick="restartQuiz()">Reiniciar Examen</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Base de datos del Examen de Juicio Situacional
+  const questions = [
+    {
+      scenario: "Contexto Institucional (Tronco Común): En una dirección seccional de la DIAN, un funcionario público con asignación básica de $3.500.000 revisa el desprendible de pago de nómina para comprobar las deducciones legales de salud y pensión.",
+      question: "¿Cuál es el valor total exacto que por ley debe retener la entidad mensualmente por ambos conceptos?",
+      target: "Tronco Común - Razonamiento Cuantitativo",
+      options: [
+        { text: "A) $240.000, calculando el 3.5% de aportes para cada subsistema.", isCorrect: false, trap: "Trampa de distractor numérico: los aportes legales del trabajador a salud y pensión en Colombia son del 4% cada uno, no del 3.5%." },
+        { text: "B) $280.000, correspondiente al 8% total sobre el salario básico devengado.", isCorrect: true, trap: "¡Excelente! La suma es 4% (salud) + 4% (pensión) = 8%. Calculando: $3.500.000 * 0.08 = $280.000." },
+        { text: "C) $300.000, al descontarse un porcentaje fijo administrativo del 10%.", isCorrect: false, trap: "Error conceptual: la ley laboral administrativa no permite deducciones arbitrarias del 10%; se rige estrictamente por los porcentajes normativos." },
+        { text: "D) $140.000, ya que los empleados de carrera solo aportan a salud.", isCorrect: false, trap: "Falso: los servidores públicos tienen la obligación legal inexcusable de aportar concurrentemente tanto al subsistema de salud como al de pensiones." }
+      ]
+    },
+    {
+      scenario: "Contexto Asistencial (Para Juanda y Ana): En la dependencia de archivo de la DIAN se detecta que varios expedientes tributarios concluidos hace 8 meses permanecen en carpetas rotas con ganchos de cosedora oxidados y sin orden de folios.",
+      question: "Conforme a la Ley 594 de 2000 y los lineamientos del AGN, ¿cuál es el procedimiento técnico debido?",
+      target: "Nivel Asistencial - Gestión Documental (Ley 594 de 2000)",
+      options: [
+        { text: "A) Perforar las hojas inmediatamente y remitirlas en costales al Archivo Histórico.", isCorrect: false, trap: "Violación técnica grave: los documentos en trámite o recién cerrados no van al archivo histórico sino que agotan su fase en el archivo de gestión/central según las TRD." },
+        { text: "B) Eliminar el material metálico corrosivo, organizar cronológicamente de forma ascendente y foliar con lápiz de mina negra en la esquina superior derecha.", isCorrect: true, trap: "¡Correcto! El protocolo archivístico exige retirar grapas oxidadas para evitar el deterioro del soporte de papel y mantener el orden cronológico ascendente estricto." },
+        { text: "C) Destruir las copias de los documentos y archivar únicamente las hojas que tengan sellos originales.", isCorrect: false, trap: "Trampa de distractor: la eliminación o expurgo documental no puede hacerse de manera arbitraria sin autorización del Comité de Archivo y sustento en las TRD." },
+        { text: "D) Foliar de inmediato con bolígrafo de tinta húmeda indeleble para evitar alteraciones.", isCorrect: false, trap: "Error técnico: las normas del AGN prohíben taxativamente el uso de bolígrafo o tinta húmeda para foliar; debe usarse exclusivamente lápiz de mina negra suave (HB o 2B)." }
+      ]
+    },
+    {
+      scenario: "Contexto Técnico (Para Nathan): En un operativo aduanero de control en zona secundaria, un Analista I detiene un camión de encomiendas que transporta 500 pares de zapatillas de marca extranjera. El conductor aporta una factura de compraventa local sin manifiesto de importación ni declaración aduanera que acredite su ingreso legal al país.",
+      question: "¿Qué tipificación técnica corresponde a la infracción y qué medida cautelar procede bajo el Decreto 1165 de 2019?",
+      target: "Nivel Técnico - Control Aduanero y Aprehensión (Decreto 1165 de 2019)",
+      options: [
+        { text: "A) Constituye contrabando técnico y procede imponer una multa de tránsito al conductor.", isCorrect: false, trap: "Confusión conceptual: el contrabando técnico ocurre dentro de los trámites formales aduaneros con fraude documental; además, la DIAN no impone multas de tránsito." },
+        { text: "B) Se configura una causal de aprehensión y procede diligenciar el Acta de Aprehensión material de las mercancías para custodia institucional.", isCorrect: true, trap: "¡Muy bien! Al no acreditarse la legal introducción y permanencia en el territorio aduanero nacional mediante declaración aduanera, procede la medida cautelar de aprehensión." },
+        { text: "C) Procede la devolución inmediata si el conductor firma una promesa de radicación en MUISCA en los 15 días siguientes.", isCorrect: false, trap: "Trampa de distractor: las medidas cautelares aduaneras son de orden público objetivo; un funcionario técnico no tiene facultades discrecionales para pactar plazos informales." },
+        { text: "D) Se declara el decomiso automático en el sitio y se procede a la incineración de las zapatillas.", isCorrect: false, trap: "Violación al debido proceso: la aprehensión es la medida preventiva inicial; el decomiso definitivo solo se declara mediante acto administrativo motivado una vez surtida la etapa de descargos." }
+      ]
+    },
+    {
+      scenario: "Contexto Profesional (Para Felipe): Un Gestor I audita la declaración de renta de un contribuyente presentada formalmente hace 4 años. Tras cruces con analítica de exógena, identifica que el contribuyente omitió ingresos por más de 800 millones de pesos, por lo que proyecta proferir un Requerimiento Especial para modificar la liquidación privada.",
+      question: "Al evaluar la viabilidad jurídica de dicha actuación, ¿qué principio y norma procesal debe advertir el funcionario?",
+      target: "Nivel Profesional - Procedimiento Tributario y Firmeza (Art. 714 ET)",
+      options: [
+        { text: "A) La actuación es plenamente viable porque los delitos de evasión prescriben a los 10 años en vía gubernativa.", isCorrect: false, trap: "Distractor de confusión entre prescripción penal y firmeza tributaria. La determinación oficial en sede administrativa se rige por los términos preclusivos del Estatuto Tributario." },
+        { text: "B) La declaración tributaria se encuentra en firme conforme al artículo 714 del ET (pasaron más de 3 años), impidiendo a la DIAN notificar requerimiento especial.", isCorrect: true, trap: "¡Excelente criterio jurídico! Según el artículo 714 del Estatuto Tributario, el término general de firmeza es de 3 años contados desde el vencimiento del plazo para declarar. Superado este plazo, la DIAN pierde competencia determinativa." },
+        { text: "C) Se debe proferir de manera directa la Liquidación Oficial de Revisión sin requerimiento especial previo para ahorrar tiempo procesal.", isCorrect: false, trap: "Violación flagrante al debido proceso (art. 703 ET). Omitir el Requerimiento Especial acarrea la nulidad insubsanable de la liquidación oficial de revisión." },
+        { text: "D) Procede archivar el caso únicamente si el contribuyente presenta un escrito solicitando el beneficio de auditoría extemporáneo.", isCorrect: false, trap: "Inconsistencia jurídica: la firmeza general de 3 años opera por mandato objetivo de la ley; no depende de solicitudes de beneficios extemporáneos del contribuyente." }
+      ]
+    },
+    {
+      scenario: "Contexto de Integridad Pública: Un usuario que acaba de tramitar la actualización de su RUT en la plataforma MUISCA insiste en entregarle al servidor un sobre cerrado con dinero en agradecimiento por su agilidad y buena atención.",
+      question: "Conforme al Código de Integridad de la DIAN y la Ley 1952 de 2019, ¿cuál es la conducta debida del servidor público?",
+      target: "Prueba de Integridad y Ética del Servidor Público",
+      options: [
+        { text: "A) Aceptar el sobre para no incomodar al ciudadano y transferir el dinero al fondo de bienestar social de la seccional.", isCorrect: false, trap: "Trampa recurrente de la CNSC: no existen motivos altruistas ni de cortesía que justifiquen aceptar retribuciones o dádivas por cumplir la función oficial." },
+        { text: "B) Rechazar categóricamente el sobre, explicar con respeto que está prohibido por la ley y recordar que el servicio de calidad es una obligación del cargo.", isCorrect: true, trap: "¡Impecable! El valor de la Honestidad e Integridad exige el rechazo frontal a cualquier tipo de gratificación económica de terceros vinculada a la labor pública." },
+        { text: "C) Aceptarlo únicamente si el monto no supera medio salario mínimo diario legal vigente.", isCorrect: false, trap: "Distractor falso: la ley colombiana no contempla ningún umbral mínimo de dinero tolerable para recibir beneficios económicos de los administrados." },
+        { text: "D) Indicarle al usuario que lo deposite anónimamente en el buzón de sugerencias de la entidad.", isCorrect: false, trap: "Conducta evasiva: el buzón de sugerencias está destinado exclusivamente a PQRSDF, no a la canalización de recursos o presentes informales." }
+      ]
+    },
+    {
+      scenario: "Contexto Analítica y Antiabuso (Nivel Profesional y Técnico Avanzado): Una sociedad mercantil interpone contratos de asesoría técnica con filiales en paraísos fiscales sin sustancia económica ni entregables tangibles, reduciendo artificialmente su base gravable del impuesto sobre la renta.",
+      question: "En virtud del artículo 869 del Estatuto Tributario (Cláusula Antiabuso), la DIAN tiene la potestad de:",
+      target: "Fiscalización Avanzada - Cláusula General Antiabuso (Art. 869 ET)",
+      options: [
+        { text: "A) Abstenerse de actuar porque los contratos legalmente celebrados son ley para las partes en el derecho privado.", isCorrect: false, trap: "Error dogmático: el derecho privado no puede ser instrumentalizado para burlar la obligación tributaria sustancial del Estado." },
+        { text: "B) Recaracterizar o desconocer las operaciones, haciendo prevalecer la sustancia económica sobre las formas jurídicas para liquidar el tributo real.", isCorrect: true, trap: "¡Perfecto! La Cláusula General Antiabuso faculta a la DIAN a levantar el velo contractual y hacer primar la realidad económica de fondo para frenar la evasión." },
+        { text: "C) Proceder a la clausura inmediata y definitiva de la empresa sin permitir contradicción en sede administrativa.", isCorrect: false, trap: "Desproporción procesal: la aplicación de la cláusula antiabuso sigue un procedimiento reglado con traslado y derecho de defensa antes de la liquidación oficial." },
+        { text: "D) Remitir el caso a la Superintendencia de Sociedades y desestimar el cobro de impuestos.", isCorrect: false, trap: "Evasión del deber funcional: la DIAN tiene competencia autónoma y prevalente para determinar y cobrar los gravámenes evadidos." }
+      ]
+    }
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let userAnswers = [];
+
+  function loadQuestion() {
+    const q = questions[currentQuestionIndex];
+    document.getElementById('question-progress').innerText = `Pregunta ${currentQuestionIndex + 1} de ${questions.length}`;
+    document.getElementById('q-scenario').innerText = q.scenario;
+    document.getElementById('q-text').innerText = q.question;
+
+    const optContainer = document.getElementById('options-container');
+    optContainer.innerHTML = '';
+
+    const fbBox = document.getElementById('feedback-container');
+    fbBox.className = 'feedback-box';
+    fbBox.innerHTML = '';
+
+    document.getElementById('btn-next').classList.remove('show');
+
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerText = opt.text;
+      btn.onclick = () => selectOption(idx);
+      optContainer.appendChild(btn);
+    });
+  }
+
+  function selectOption(selectedIndex) {
+    const q = questions[currentQuestionIndex];
+    const selected = q.options[selectedIndex];
+    const optButtons = document.querySelectorAll('.option-btn');
+
+    // Deshabilitar botones para evitar múltiples clics
+    optButtons.forEach(b => b.disabled = true);
+
+    const fbBox = document.getElementById('feedback-container');
+    fbBox.classList.add('show');
+
+    if (selected.isCorrect) {
+      optButtons[selectedIndex].classList.add('correct');
+      fbBox.classList.add('correct-fb');
+      fbBox.innerHTML = `<strong>✅ ¡Respuesta Correcta!</strong><div class="error-analysis">${selected.trap}</div>`;
+      score++;
+      userAnswers.push({ question: q.target, correct: true, detail: "Superado con éxito." });
+    } else {
+      optButtons[selectedIndex].classList.add('wrong');
+      // Marcar la que era correcta para el aprendizaje
+      q.options.forEach((opt, idx) => {
+        if (opt.isCorrect) optButtons[idx].classList.add('correct');
+      });
+      fbBox.classList.add('wrong-fb');
+      fbBox.innerHTML = `<strong>❌ Respuesta Incorrecta: Análisis Pedagógico del Error</strong><div class="error-analysis"><strong>¿Cuál fue el error?</strong> ${selected.trap}</div>`;
+      userAnswers.push({ question: q.target, correct: false, detail: selected.trap });
+    }
+
+    document.getElementById('btn-next').classList.add('show');
+  }
+
+  function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      loadQuestion();
+    } else {
+      showResults();
+    }
+  }
+
+  function showResults() {
+    document.getElementById('quiz-body').style.display = 'none';
+    const resultsContainer = document.getElementById('results-container');
+    resultsContainer.classList.add('show');
+
+    const finalScore100 = Math.round((score / questions.length) * 100);
+    document.getElementById('final-score').innerHTML = `${finalScore100}<span>/100 pts</span>`;
+
+    const statusEl = document.getElementById('score-status');
+    if (finalScore100 >= 70) {
+      statusEl.style.color = 'var(--success)';
+      statusEl.innerText = "¡ESTADO: APROBADO! Superas el umbral eliminatorio fijado por la CNSC (70.00 puntos).";
+    } else {
+      statusEl.style.color = 'var(--danger)';
+      statusEl.innerText = "ESTADO: NO SUPERA EL UMBRAL (Mínimo aprobatorio eliminatorio: 70.00 puntos). Debes reforzar los temas señalados.";
+    }
+
+    const tbody = document.getElementById('reinforce-table-body');
+    tbody.innerHTML = '';
+    userAnswers.forEach(ans => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${ans.question}</strong></td>
+        <td style="color: ${ans.correct ? 'green' : 'red'}; font-weight: bold;">${ans.correct ? 'Acertada' : 'Fallada'}</td>
+        <td>${ans.correct ? 'Afianzado. Continuar con simulacros de velocidad.' : ans.detail}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function restartQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    document.getElementById('quiz-body').style.display = 'block';
+    document.getElementById('results-container').classList.remove('show');
+    loadQuestion();
+  }
+
+  // Inicialización
+  loadQuestion();
+</script>
+
+</body>
+</html>
